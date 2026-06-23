@@ -1,4 +1,5 @@
 import http from "http";
+import logger from "../utils/logger.js";
 
 export function errorHandler(err, req, res, next) {
   const status = err.status || err.statusCode || 500;
@@ -8,7 +9,13 @@ export function errorHandler(err, req, res, next) {
     !http.STATUS_CODES[status] ||
     status >= 500
   ) {
-    console.error("Error:", err);
+    logger.error("request_error", {
+      message: err.message,
+      stack: err.stack,
+      method: req.method,
+      path: req.originalUrl,
+      status,
+    });
   }
 
   return res.status(status).json({
