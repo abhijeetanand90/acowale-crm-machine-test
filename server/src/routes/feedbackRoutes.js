@@ -4,6 +4,7 @@ import { createFeedbackController,getFeedbackListController,getFeedbackSummaryCo
 import { validateBody,validateQuery } from "../middlewares/validation.js";
 import { feedbackRateLimiter } from "../middlewares/rateLimiter.js";
 import { createFeedbackSchema,getFeedbackQuerySchema } from "./schema.js";
+import asyncHandler from "../utils/asyncHandler.js";
 
 const router = express.Router();
 
@@ -11,10 +12,11 @@ router.post(
   "/",
   feedbackRateLimiter,
   validateBody(createFeedbackSchema),
-  createFeedbackController
+  asyncHandler(createFeedbackController)
 );
 
-router.get("/", validateQuery(getFeedbackQuerySchema), getFeedbackListController);
-router.get("/summary", getFeedbackSummaryController);
+router.get("/", validateQuery(getFeedbackQuerySchema), asyncHandler(getFeedbackListController));
+router.get("/summary", asyncHandler(getFeedbackSummaryController));
+
 
 export default router;
