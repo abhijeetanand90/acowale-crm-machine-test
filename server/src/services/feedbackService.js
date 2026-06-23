@@ -1,5 +1,6 @@
-import Feedback from "../models/feedbackModel.js";
-import { Op } from "sequelize";
+import Feedback,{FeedbackStatus,FeedbackCategory} from "../models/feedbackModel.js";
+
+import { Op,fn,col } from "sequelize";
 import { buildFeedbackFilter } from "../utils/buildFeedbackFilter.js";
 import {
   getPagination,
@@ -59,5 +60,54 @@ export async function getFeedbackList({ search, category, status, page, limit })
       page,
       limit,
     }),
+  };
+}
+
+export async function getFeedbackSummary() {
+  const total = await Feedback.count();
+
+  const statusRows = await Feedback.findAll({
+    attributes: ["status", [fn("COUNT", col("id")), "count"]],
+    group: ["status"],
+    raw: true,
+  });
+
+  const categoryRows = await Feedback.findAll({
+    attributes: ["category", [fn("COUNT", col("id")), "count"]],
+    group: ["category"],
+    raw: true,
+  });
+
+  const recent = await Feedback.findAll({
+    order: [["createdAt", "DESC"]],
+    limit: 5,
+    attributes: ["id", "category", "comment", "email", "status", "createdAt"],
+  });
+
+  const statusCounts = Object.values(FeedbackStatus).reduce(function (acc, status) {
+    acc[status] = 0;
+    return acc;
+  }, {});
+
+  statusRows.forEach(function (row) {
+    statusCounts[row.status] = Number(row.count);
+  });
+
+  const categoryCounts = Object.values(FeedbackCategory).map(function (category) {
+    const match = categoryRows.find(function (row) {
+      return row.category === category;
+    });
+
+    return {
+      category,
+      count: match ? Number(match.count) : 0,
+    };
+  });
+
+  return {
+    total,
+    statusCounts,
+    categoryCounts,
+    recent,
   };
 }

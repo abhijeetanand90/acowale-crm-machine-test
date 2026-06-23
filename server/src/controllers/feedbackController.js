@@ -1,4 +1,4 @@
-import { createFeedback,getFeedbackList } from "../services/feedbackService.js";
+import { createFeedback,getFeedbackList, getFeedbackSummary } from "../services/feedbackService.js";
 
 export async function createFeedbackController(req, res, next) {
   try {
@@ -38,6 +38,19 @@ export async function getFeedbackListController(req, res, next) {
       success: true,
       data: result.feedbacks,
       pagination: result.pagination,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function getFeedbackSummaryController(req, res, next) {
+  try {
+    const summary = await getFeedbackSummary();
+
+    return res.status(200).json({
+      success: true,
+      data: summary,
     });
   } catch (error) {
     next(error);

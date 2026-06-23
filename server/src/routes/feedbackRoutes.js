@@ -1,6 +1,6 @@
 import express from "express";
 
-import { createFeedbackController,getFeedbackListController } from "../controllers/feedbackController.js";
+import { createFeedbackController,getFeedbackListController,getFeedbackSummaryController } from "../controllers/feedbackController.js";
 import { validateBody,validateQuery } from "../middlewares/validation.js";
 import { feedbackRateLimiter } from "../middlewares/rateLimiter.js";
 import { createFeedbackSchema,getFeedbackQuerySchema } from "./schema.js";
@@ -15,5 +15,6 @@ router.post(
 );
 
 router.get("/", validateQuery(getFeedbackQuerySchema), getFeedbackListController);
+router.get("/summary", getFeedbackSummaryController);
 
 export default router;
