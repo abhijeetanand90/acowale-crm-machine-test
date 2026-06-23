@@ -60,3 +60,6 @@ jobs:
 
       - name: Run lint if available
         run: npm run lint --if-present
+
+      - name: Run server tests
+        run: npm test --if-present
