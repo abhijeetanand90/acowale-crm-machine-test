@@ -4,9 +4,9 @@ A lightweight customer feedback platform built for collecting user feedback, vie
 
 ## Live Links
 
-* Frontend: `<add-vercel-url-here>`
-* Backend: `<add-render-url-here>`
-* Health Check: `<add-render-url-here>/_health`
+* Frontend: `https://acowale-crm-machine-test.vercel.app`
+* Backend: `https://acowale-crm-machine-test.onrender.com`
+* Health Check: `https://acowale-crm-machine-test.onrender.com/_health`
 
 ## Tech Stack
 
